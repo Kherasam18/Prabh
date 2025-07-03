@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
+import type { Group, Mesh } from "three"
 import Image from "next/image"
 import {
   Instagram,
@@ -25,8 +26,16 @@ import { Environment, Box, Cylinder, useScroll, ScrollControls, Sparkles as Thre
 import { useSpring, animated } from "@react-spring/three"
 
 // 3D Cosmetic Product Components
-function Lipstick({ position, color = "#d4af37", scale = 1 }) {
-  const groupRef = useRef()
+function Lipstick({
+  position,
+  color = "#d4af37",
+  scale = 1,
+}: {
+  position: [number, number, number];
+  color?: string;
+  scale?: number;
+}) {
+  const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
 
   useFrame((state) => {
@@ -61,8 +70,8 @@ function Lipstick({ position, color = "#d4af37", scale = 1 }) {
   )
 }
 
-function Foundation({ position, color = "#f4c2c2", scale = 1 }) {
-  const meshRef = useRef()
+function Foundation({ position, color = "#f4c2c2", scale = 1 }: { position: [number, number, number]; color?: string; scale?: number }) {
+  const meshRef = useRef<Mesh>(null)
   const [hovered, setHovered] = useState(false)
 
   useFrame((state) => {
@@ -92,8 +101,8 @@ function Foundation({ position, color = "#f4c2c2", scale = 1 }) {
   )
 }
 
-function EyeshadowPalette({ position, scale = 1 }) {
-  const meshRef = useRef()
+function EyeshadowPalette({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
+  const meshRef = useRef<Mesh>(null)
   const [hovered, setHovered] = useState(false)
 
   useFrame((state) => {
@@ -134,8 +143,8 @@ function EyeshadowPalette({ position, scale = 1 }) {
   )
 }
 
-function PerfumeBottle({ position, scale = 1 }) {
-  const groupRef = useRef()
+function PerfumeBottle({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
+  const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
 
   useFrame((state) => {
@@ -173,7 +182,7 @@ function PerfumeBottle({ position, scale = 1 }) {
 // Luxury Floating Elements Background
 function LuxuryBackground() {
   const scroll = useScroll()
-  const groupRef = useRef()
+  const groupRef = useRef<Group>(null)
 
   useFrame(() => {
     if (groupRef.current && scroll) {
@@ -217,8 +226,8 @@ function LuxuryScene3D() {
 }
 
 // Custom hook for 3D intersection observer
-function use3DIntersectionObserver(options = {}) {
-  const elementRef = useRef(null)
+function use3DIntersectionObserver<T extends HTMLElement = HTMLDivElement>(options: IntersectionObserverInit = {}): [React.RefObject<T | null>, boolean] {
+  const elementRef = useRef<T>(null)
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -239,14 +248,21 @@ function use3DIntersectionObserver(options = {}) {
         observer.unobserve(currentElement)
       }
     }
-  }, [])
+  }, [options])
 
   return [elementRef, isVisible]
 }
 
 // 3D Animated Section Component
-function Animated3DSection({ children, className = "", delay = 0, animation = "fade-up" }) {
-  const [ref, isVisible] = use3DIntersectionObserver()
+type Animated3DSectionProps = {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  animation?: string;
+};
+
+function Animated3DSection({ children, className = "", delay = 0, animation = "fade-up" }: Animated3DSectionProps) {
+  const [ref, isVisible] = use3DIntersectionObserver<HTMLDivElement>()
 
   return (
     <div
@@ -276,7 +292,13 @@ function Animated3DSection({ children, className = "", delay = 0, animation = "f
 }
 
 // 3D Card Component
-function Card3D({ children, className = "", hover3D = true }) {
+type Card3DProps = {
+  children: React.ReactNode;
+  className?: string;
+  hover3D?: boolean;
+};
+
+function Card3D({ children, className = "", hover3D = true }: Card3DProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -301,7 +323,7 @@ function useParallaxMouse() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 2
       const y = (e.clientY / window.innerHeight - 0.5) * 2
       setMousePosition({ x, y })
@@ -335,7 +357,9 @@ export default function UGCPortfolio() {
     "Other",
   ]
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
@@ -343,7 +367,7 @@ export default function UGCPortfolio() {
     }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
@@ -378,18 +402,7 @@ ${formData.projectDetails}
     }
   }
 
-  const brands = [
-    { name: "Bellavita", logo: "/brand1.jpg" },
-    { name: "Cetaphil", logo: "/brand2.png" },
-    { name: "Garnier", logo: "/brand3.jpg" },
-    { name: "Dot & Key", logo: "/brand4.png" },
-    { name: "Lakmé", logo: "/brand5.png" },
-    { name: "Minimalist", logo: "/brand6.png" },
-    { name: "Innovist", logo: "/brand7.png" },
-    { name: "The Derma Co", logo: "/brand8.png" },
-    { name: "Plum", logo: "/brand9.png" },
-    { name: "L'Oréal", logo: "/brand10.png" },
-  ]
+
 
   useEffect(() => {
     const videos = document.querySelectorAll("[data-video]")
@@ -399,7 +412,11 @@ ${formData.projectDetails}
       const progressBar = document.getElementById(`progress-bar-${videoNum}`)
       const progressContainer = document.getElementById(`progress-${videoNum}`)
 
-      if (video && progressBar && progressContainer) {
+      if (
+        video instanceof HTMLVideoElement &&
+        progressBar instanceof HTMLElement &&
+        progressContainer instanceof HTMLElement
+      ) {
         video.addEventListener("timeupdate", () => {
           if (!video.paused) {
             const progress = (video.currentTime / video.duration) * 100
@@ -559,14 +576,13 @@ ${formData.projectDetails}
         border: 1px solid rgba(212, 175, 55, 0.2);
         backdrop-filter: blur(20px);
       }
-      
-    `
-    document.head.appendChild(style)
+    `;
+    document.head.appendChild(style);
 
     return () => {
-      document.head.removeChild(style)
-    }
-  }, [])
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-pink-50 to-purple-50 relative overflow-hidden">
@@ -719,7 +735,7 @@ ${formData.projectDetails}
               <h2 className="text-5xl font-light mb-12 luxury-gradient-text">What is UGC?</h2>
               <p className="text-xl max-w-5xl mx-auto leading-relaxed text-gray-700 font-light mb-16">
                 User-Generated Content transcends traditional marketing by creating authentic, sophisticated
-                narratives that showcase premium products in their natural elegance. It's about crafting content that
+                narratives that showcase premium products in their natural elegance. It&apos;s about crafting content that
                 speaks to the refined tastes of discerning consumers while maintaining genuine authenticity.
               </p>
             </Animated3DSection>
@@ -928,7 +944,7 @@ ${formData.projectDetails}
                             <Star key={j} className="w-6 h-6 fill-rose-400 text-rose-400" />
                           ))}
                         </div>
-                        <p className="text-gray-700 italic text-lg leading-relaxed">"{testimonial.review}"</p>
+                        <p className="text-gray-700 italic text-lg leading-relaxed">&quot;{testimonial.review}&quot;</p>
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full flex items-center justify-center luxury-shadow">
                             <span className="font-medium text-white">{testimonial.initial}</span>
@@ -973,10 +989,12 @@ ${formData.projectDetails}
                         {i === 1 ? (
                           <video
                             ref={(el) => {
-                              if (el) {
+                              if (el && el instanceof HTMLVideoElement) {
                                 el.onended = () => {
                                   const nextVideo = document.querySelector('[data-video="2"]')
-                                  if (nextVideo) nextVideo.play()
+                                  if (nextVideo && nextVideo instanceof HTMLVideoElement) {
+                                    nextVideo.play()
+                                  }
                                 }
                               }
                             }}
@@ -993,7 +1011,9 @@ ${formData.projectDetails}
                               if (el) {
                                 el.onended = () => {
                                   const nextVideo = document.querySelector('[data-video="3"]')
-                                  if (nextVideo) nextVideo.play()
+                                  if (nextVideo && nextVideo instanceof HTMLVideoElement) {
+                                    nextVideo.play()
+                                  }
                                 }
                               }
                             }}
@@ -1009,7 +1029,9 @@ ${formData.projectDetails}
                               if (el) {
                                 el.onended = () => {
                                   const nextVideo = document.querySelector('[data-video="4"]')
-                                  if (nextVideo) nextVideo.play()
+                                  if (nextVideo && nextVideo instanceof HTMLVideoElement) {
+                                    nextVideo.play()
+                                  }
                                 }
                               }
                             }}
@@ -1021,18 +1043,6 @@ ${formData.projectDetails}
                           />
                         ) : (
                           <video
-                            ref={(el) => {
-                              if (el) {
-                                el.onended = () => {
-                                  const firstVideo = document.querySelector('[data-video="1"]')
-                                  if (firstVideo) {
-                                    setTimeout(() => firstVideo.play(), 1000)
-                                  }
-                                }
-                              }
-                            }}
-                            data-video="4"
-                            src="/benefits_of_ugc.mp4"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             muted
                             playsInline
@@ -1044,11 +1054,13 @@ ${formData.projectDetails}
                             className="luxury-glass hover:bg-rose-500 hover:text-white backdrop-blur-sm tilt-3d luxury-shadow w-16 h-16"
                             onClick={(e) => {
                               e.preventDefault()
-                              const video = e.currentTarget.parentElement.previousElementSibling
-                              if (video.paused) {
-                                video.play()
-                              } else {
-                                video.pause()
+                              const video = e.currentTarget.parentElement?.previousElementSibling as HTMLVideoElement | null;
+                              if (video && video instanceof HTMLVideoElement) {
+                                if (video.paused) {
+                                  video.play();
+                                } else {
+                                  video.pause();
+                                }
                               }
                             }}
                           >
@@ -1263,7 +1275,7 @@ ${formData.projectDetails}
         <section className="py-24 relative bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 overflow-hidden">
           <div className="container mx-auto px-4 text-center relative z-10">
             <Animated3DSection animation="fade-up" className="mb-20">
-              <h2 className="text-5xl font-bold text-orange-500 mb-4">Brands I've Worked With</h2>
+              <h2 className="text-5xl font-bold text-orange-500 mb-4">Brands I&apos;ve Worked With</h2>
             </Animated3DSection>
 
             {/* Brand Grid */}
@@ -1331,7 +1343,7 @@ ${formData.projectDetails}
           <div className="container mx-auto px-4 relative z-10">
             {/* Header */}
             <Animated3DSection animation="fade-up" className="text-center mb-16">
-              <h2 className="text-5xl font-light luxury-gradient-text mb-8">Let's Collaborate</h2>
+              <h2 className="text-5xl font-light luxury-gradient-text mb-8">Let&apos;s Collaborate</h2>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
                 Ready to create authentic, engaging content that drives real results for your beauty brand?
               </p>
