@@ -379,16 +379,16 @@ ${formData.projectDetails}
   }
 
   const brands = [
-    { name: "Bellavita", logo: "/images/brands/bellavita.png" },
-    { name: "Cetaphil", logo: "/images/brands/cetaphil.png" },
-    { name: "Garnier", logo: "/images/brands/garnier.jpeg" },
-    { name: "Dot & Key", logo: "/images/brands/dotkey.jpeg" },
-    { name: "Lakmé", logo: "/images/brands/lakme.png" },
-    { name: "Minimalist", logo: "/images/brands/minimalist.png" },
-    { name: "Innovist", logo: "/images/brands/innovist.png" },
-    { name: "The Derma Co", logo: "/images/brands/dermaco.png" },
-    { name: "Plum", logo: "/images/brands/plum.png" },
-    { name: "L'Oréal", logo: "/images/brands/loreal.png" },
+    { name: "Bellavita", logo: "/brand1.jpg" },
+    { name: "Cetaphil", logo: "/brand2.png" },
+    { name: "Garnier", logo: "/brand3.jpg" },
+    { name: "Dot & Key", logo: "/brand4.png" },
+    { name: "Lakmé", logo: "/brand5.png" },
+    { name: "Minimalist", logo: "/brand6.png" },
+    { name: "Innovist", logo: "/brand7.png" },
+    { name: "The Derma Co", logo: "/brand8.png" },
+    { name: "Plum", logo: "/brand9.png" },
+    { name: "L'Oréal", logo: "/brand10.png" },
   ]
 
   useEffect(() => {
